@@ -16,14 +16,14 @@ def home():
 
 @app.route("/showtimes", methods=['GET'])
 def showtimes():
-   return make_response(jsonify({"schedule": schedule}))
+   return make_response(jsonify({"schedule": schedule}),200)
 
 @app.route("/showmovies/<date>", methods=['GET'])
 def showmoviesByDate(date):
    for day in schedule:
       if day["date"] == date:
-         return make_response(jsonify(day))
-   return make_response(jsonify({"error": "Date not found!"}))
+         return make_response(jsonify(day),200)
+   return make_response(jsonify({"error": "Date not found!"}),400)
 
 if __name__ == "__main__":
    print("Server running in port %s"%(PORT))
