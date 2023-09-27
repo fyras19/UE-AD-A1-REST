@@ -1,8 +1,8 @@
 ---
-openapi: 3.1.0
+openapi: 3.0.2
 info:
   title: Movie API
-  summary: This is the API of the Movie service
+  #summary: This is the API of the Movie service
   description: This is the API of the Movie service, it should be much much much much much much much much much much much much much much much much much much much much much longer
   contact:
     name: Helene Coullon

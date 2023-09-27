@@ -21,7 +21,7 @@ def get_json():
    return make_response(jsonify({"bookings": bookings}), 200)
 
 @app.route("/bookings/<userid>", methods=['GET'])
-def get_booking_byuserid(userid):
+def get_booking_for_user(userid):
    for booking in bookings:
       if str(booking["userid"]) == str(userid):
          res = make_response(jsonify(booking),200)
@@ -29,7 +29,7 @@ def get_booking_byuserid(userid):
    return make_response(jsonify({"error":"User ID not found"}),400)
 
 @app.route("/bookings/<userid>", methods=['POST'])
-def add_booking(userid):
+def add_booking_byuser(userid):
    req = request.get_json()
    date,movieid = req["date"], req["movieid"]
    booking_response = requests.get(f"http://{HOST}:{PORT}/bookings/{userid}")
