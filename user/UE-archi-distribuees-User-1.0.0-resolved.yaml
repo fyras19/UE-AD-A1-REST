@@ -274,7 +274,7 @@ paths:
       summary: get the full JSON database
       description: |
         Nothing to do
-      operationId: get_json
+      operationId: get_movies
       responses:
         "200":
           description: full JSON
