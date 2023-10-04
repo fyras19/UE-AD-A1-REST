@@ -9,7 +9,8 @@ PORT = 3203
 HOST = '0.0.0.0'
 
 with open('{}/databases/users.json'.format("."), "r") as jsf:
-   users = json.load(jsf)["users"]
+    users = json.load(jsf)["users"]
+
 
 
 ###### Users part ##########
@@ -52,7 +53,23 @@ def add_booking_byuser(userid):
    response = requests.post(f"http://{HOST}:3201/bookings/{userid}",json=req)
    return make_response(response.json(), response.status_code)
 
-###### Movies part ##########
+@app.route("/<userid>/movies", methods=['GET'])
+def get_movies_for_user(userid):
+    bookings_by_user = requests.get(f"http://{HOST}:3201/bookings/{userid}")
+    movies_ids = set()
+    if bookings_by_user.status_code == 200:
+        bookings_data = bookings_by_user.json()
+        for date_data in bookings_data["dates"]:
+            for movie in date_data["movies"]:
+                movies_ids.add(movie)
+        movies = []
+        for movie_id in movies_ids:
+            movie_request = requests.get(f"http://{HOST}:3200/movies/{movie_id}")
+            if movie_request.status_code == 200:
+                movies.append(movie_request.json())
+        return make_response(jsonify({"movies": movies}), 200)
+    else:
+        return make_response(jsonify({"error": "No bookings found for this user"}), 400)
 
 @app.route("/movies", methods=['GET'])
 def get_movies():
