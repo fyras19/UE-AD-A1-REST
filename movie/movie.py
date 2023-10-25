@@ -57,6 +57,9 @@ def create_movie(movieid):
             return make_response(jsonify({"error":"movie ID already exists"}),409)
 
     movies.append(req)
+    with open('{}/databases/movies.json'.format("."), "w") as wfile:
+        json.dump(movies, wfile)
+
     res = make_response(jsonify(req),200)
     return res
 
@@ -65,6 +68,8 @@ def update_movie_rating(movieid, rate):
     for movie in movies:
         if str(movie["id"]) == str(movieid):
             movie["rating"] = float(rate)
+            with open('{}/databases/movies.json'.format("."), "w") as wfile:
+                json.dump(movies, wfile)
             res = make_response(jsonify({"message": "Movie rate updated!"}),200)
             return res
 
@@ -76,6 +81,8 @@ def del_movie(movieid):
     for movie in movies:
         if str(movie["id"]) == str(movieid):
             movies.remove(movie)
+            with open('{}/databases/movies.json'.format("."), "w") as wfile:
+                json.dump(movies, wfile)
             return make_response(jsonify({"message": "Item deleted"}),200)
 
     res = make_response(jsonify({"error":"movie ID not found"}),400)
