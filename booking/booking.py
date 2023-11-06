@@ -32,7 +32,7 @@ def get_booking_for_user(userid):
 def add_booking_byuser(userid):
    req = request.get_json()
    date,movieid = req["date"], req["movieid"]
-   booking_response = requests.get(f"http://{HOST}:{PORT}/bookings/{userid}")
+   booking_response = requests.get(f"http://localhost:{PORT}/bookings/{userid}")
    if booking_response.status_code == 200:
     # Parse the response content as JSON
       booking_data = booking_response.json()       
@@ -40,7 +40,7 @@ def add_booking_byuser(userid):
    for booking_date in booking_dates:
       if booking_date["date"]==date and movieid in booking_date["movies"]:
          return make_response(jsonify({"error":"The booking was already made"}),409)
-   showtime = requests.get(f"http://{HOST}:3202/showmovies/{date}")
+   showtime = requests.get(f"http://showtime:3202/showmovies/{date}")
    if showtime.status_code == 200:
       showtime_data = showtime.json()
       if movieid in showtime_data["movies"]:

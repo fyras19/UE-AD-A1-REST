@@ -11,9 +11,13 @@ services:
   user:
     build: ./user/
     ports:
-        - "3203:3203"
+      - "3203:3203"
+    depends_on:
+      - booking
+      - movie
   booking:
     build: ./booking/
     ports:
-        - "3201:3201"
-
+      - "3201:3201"
+    depends_on:
+      - showtime
