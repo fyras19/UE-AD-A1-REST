@@ -26,39 +26,42 @@ def get_booking_for_user(userid):
       if str(booking["userid"]) == str(userid):
          res = make_response(jsonify(booking),200)
          return res
-   return make_response(jsonify({"error":"User ID not found"}),400)
+   return make_response(jsonify({"error":"This user doesn't have any bookings yet"}),400)
+
 
 @app.route("/bookings/<userid>", methods=['POST'])
 def add_booking_byuser(userid):
-   req = request.get_json()
-   date,movieid = req["date"], req["movieid"]
-   booking_response = requests.get(f"http://localhost:{PORT}/bookings/{userid}")
-   if booking_response.status_code == 200:
-    # Parse the response content as JSON
-      booking_data = booking_response.json()       
-   booking_dates = booking_data["dates"]
-   for booking_date in booking_dates:
-      if booking_date["date"]==date and movieid in booking_date["movies"]:
-         return make_response(jsonify({"error":"The booking was already made"}),409)
-   showtime = requests.get(f"http://showtime:3202/showmovies/{date}")
-   if showtime.status_code == 200:
-      showtime_data = showtime.json()
-      if movieid in showtime_data["movies"]:
-         
-         for booking in bookings:
-            if booking["userid"]==str(userid):
-               
-               for date_user in booking["dates"]:
-                  if date_user["date"]==str(date):
-                     
-                     date_user["movies"].append(movieid)
+    req = request.get_json()
+    date, movieid = req["date"], req["movieid"]
 
-                     return make_response(jsonify(booking),200)
-               booking["dates"].append({"date":date,"movies":[movieid]})
-               return make_response(jsonify(booking),200)
+    # Check if the movie is scheduled for the given date
+    showtime = requests.get(f"http://showtime:3202/showmovies/{date}")
+    if showtime.status_code == 200:
+        showtime_data = showtime.json()
+        if movieid not in showtime_data["movies"]:
+            return make_response(jsonify({"error": "The movie isn't scheduled on the indicated date"}), 400)
+    else: return make_response(jsonify({"error": "The movie isn't scheduled on the indicated date"}), 400)
+    booking_response = requests.get(f"http://localhost:{PORT}/bookings/{userid}")
+    if booking_response.status_code != 200: 
+    # Find the user's booking or create one if it doesn't exist
+        user_booking = {"userid": str(userid), "dates": [{"date": date, "movies": [movieid]}]}
+        bookings.append(user_booking)
+        return make_response(jsonify(user_booking), 200)
+    
+    user_booking = booking_response.json() 
+    # Check if the booking already exists
+    for date_user in user_booking["dates"]:
+        if date_user["date"] == date:
+            if movieid in date_user["movies"]:
+                return make_response(jsonify({"error": "The booking was already made"}), 409)
+            date_user["movies"].append(movieid)
+            return make_response(jsonify(user_booking), 200)
 
-         
-   return make_response(jsonify({"error":"The movie isn't scheduled on the indicated date"}),400)
+    # If the booking doesn't exist for the date, create a new one
+    user_booking["dates"].append({"date": date, "movies": [movieid]})
+
+    return make_response(jsonify(user_booking), 200)
+
 
 if __name__ == "__main__":
    print("Server running in port %s"%(PORT))
