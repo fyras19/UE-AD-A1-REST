@@ -89,9 +89,8 @@ def get_movie_byid(movieid):
     return make_response(response.json(), response.status_code)
 
 
-@app.route("/titles", methods=['GET'])
-def get_movie_bytitle():
-    title = request.args.get('title')
+@app.route("/titles/<title>", methods=['GET'])
+def get_movie_bytitle(title):
     response = requests.get(f"http://movie:3200/titles", params={'title': title})
     return make_response(response.json(), response.status_code)
 
