@@ -1,6 +1,6 @@
 # Description du projet
-
-Ce projet est une application basée sur une architecture de microservices. Dans le cadre de ce TP, nous nous sommes concentrés sur les 3 microservices "user", "booking" et "showtime" et on s'est limité au TP vert. Le repository contient des fichiers .py correspondant à chaque microservice.
+  
+  Ce TP s'est concentré sur l'architecture REST pour concevoir notre application. L'implémentation des microservices s'est fait via Flask, un framework Python populaire pour le développement web. Dans le cadre de ce TP, nous nous sommes concentrés sur les 3 microservices "user", "booking" et "showtime" et on s'est limité au TP vert. Le repository contient des fichiers .py correspondant à chaque microservice.
 L'Open Api correspondante à chaque microservice résume les différentes requêtes que l'on peut utiliser pour interroger celui-ci ainsi que les endpoints associés.
 
 
